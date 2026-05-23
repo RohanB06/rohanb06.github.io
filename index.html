@@ -470,3 +470,106 @@
 </script>
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building the E-Tongue | Rohan Bombale</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c0a;
+    --surface: #0d120f;
+    --border: #1a2420;
+    --accent: #00ff88;
+    --accent2: #ff6b35;
+    --accent3: #7de8ff;
+    --accent4: #c8ff00;
+    --text: #e4f0e8;
+    --muted: #5a7a66;
+    --card: #0f1812;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Mono', monospace; background: var(--bg); color: var(--text); overflow-x: hidden; line-height: 1.8; }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(0,255,136,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,136,0.025) 1px, transparent 1px);
+    background-size: 50px 50px; pointer-events: none; z-index: 0;
+  }
+  .orb { position: fixed; border-radius: 50%; filter: blur(130px); pointer-events: none; z-index: 0; }
+  .orb1 { width: 500px; height: 500px; background: rgba(0,255,136,0.05); top: -100px; left: -100px; }
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 60px; background: rgba(8,12,10,0.9); backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--accent); letter-spacing: 3px; text-transform: uppercase; text-decoration: none; }
+  .back-btn { color: var(--muted); text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s; }
+  .back-btn:hover { color: var(--accent); }
+  
+  .blog-container { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; padding: 130px 20px 80px; }
+  .blog-header { margin-bottom: 50px; }
+  .blog-meta { display: flex; gap: 15px; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
+  .blog-title { font-family: 'Syne', sans-serif; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; line-height: 1.1; letter-spacing: -2px; margin-bottom: 24px; color: var(--text); }
+  
+  .blog-content h2 { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--text); margin: 50px 0 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+  .blog-content p { color: var(--muted); margin-bottom: 24px; font-size: 0.95rem; }
+  .blog-content strong { color: var(--text); }
+  .blog-content ul { color: var(--muted); margin-bottom: 24px; padding-left: 20px; font-size: 0.95rem; }
+  .blog-content li { margin-bottom: 10px; }
+  
+  footer { position: relative; z-index: 1; text-align: center; padding: 40px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.7rem; letter-spacing: 2px; }
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+
+<nav>
+  <a href="portfolio.html" class="nav-logo">RB</a>
+  <a href="portfolio.html" class="back-btn">← Back to Portfolio</a>
+</nav>
+
+<div class="blog-container">
+  <div class="blog-header">
+    <div class="blog-meta">
+      <span>May 21, 2026</span>
+      <span>•</span>
+      <span>Hardware & Ayurveda</span>
+    </div>
+    <h1 class="blog-title">Building the E-Tongue: Bridging Ayurveda & Electronics</h1>
+  </div>
+  
+  <div class="blog-content">
+    <p>The concept of <strong>Rasa</strong> (taste) in Ayurveda is fundamental to determining a herb's medicinal properties. For thousands of years, this has been an incredibly subjective process, reliant on human experts. Our goal with the <strong>E-Tongue</strong> project was ambitious: to digitize taste and create an objective, electronic system capable of identifying and classifying Ayurvedic herbs.</p>
+    
+    <h2>The Hardware Stack</h2>
+    <p>At the core of the E-Tongue is a multi-sensor chemical array. Human taste buds work by detecting specific ions and molecules; we replicated this using ion-selective electrodes (ISEs) and lipid polymer membranes. These sensors are incredibly sensitive to changes in voltage caused by the presence of specific ions.</p>
+    <ul>
+      <li><strong>Sweet (Madhura):</strong> Detected via carbohydrate-sensitive membranes.</li>
+      <li><strong>Sour (Amla):</strong> Measured using highly precise pH sensors.</li>
+      <li><strong>Salty (Lavana):</strong> Detected using sodium/potassium ion-selective electrodes.</li>
+      <li><strong>Bitter (Tikta) & Pungent (Katu):</strong> Measured using specific alkaloid-sensitive membranes.</li>
+    </ul>
+    
+    <p>These analog signals are minuscule—often in the millivolt range. To process them, we used an instrumentation amplifier array before feeding the signals into the <strong>Arduino's 10-bit ADC</strong>. The Arduino acts as the primary data acquisition unit, rapidly sampling the sensor array and applying basic digital filtering to remove noise.</p>
+    
+    <h2>Signal Processing & Fingerprinting</h2>
+    <p>Raw voltage data isn't enough. Every herb creates a unique response curve across the sensor array over time. We programmed the Arduino to capture these transient responses and transmit them via Serial to a host computer. Here, we apply <strong>Principal Component Analysis (PCA)</strong> to reduce the dimensionality of the data, creating a unique "taste fingerprint" for each herb.</p>
+    
+    <p>Once we have a fingerprint, we can compare it against a database of known, authenticated Ayurvedic herbs. This allows us to instantly verify the authenticity of a sample and detect adulteration with high accuracy.</p>
+    
+    <h2>Future Scope</h2>
+    <p>While the current prototype uses an Arduino, we are planning to upgrade the processing core to an <strong>STM32</strong> for its superior 12-bit ADCs and real-time DSP capabilities. Coupled with an <strong>ESP32</strong>, the E-Tongue will soon be a fully wireless, cloud-connected IoT device capable of pushing taste fingerprints directly to an AI model for advanced neural network classification.</p>
+    
+    <p>Bridging the gap between ancient Ayurvedic wisdom and modern embedded systems has been an incredible engineering challenge, and we're just getting started.</p>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 · Rohan Bombale</p>
+</footer>
+</body>
+</html>
